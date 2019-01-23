@@ -9,10 +9,12 @@
     </StackLayout> -->
     <GridLayout rows="auto, auto, auto">
         <StackLayout row="0">
-            <TextField hint="Email" keyboardType="email"></TextField>
+            <TextField [(ngModel)]="user.email" hint="Email" 
+                        keyboardType="email"></TextField>
         </StackLayout>
         <StackLayout row="1">
-            <TextField hint="Contraseña" secure="true"></TextField>
+            <TextField [(ngModel)]="user.password" hint="Contraseña" 
+                        secure="true"></TextField>
         </StackLayout>
         <StackLayout row="2">
             <Button class="btn btn-login btn-rounded-sm font-weight-bold t-18"
