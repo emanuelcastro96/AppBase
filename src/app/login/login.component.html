@@ -1,26 +1,47 @@
-<FlexboxLayout class="page page-login" backgroundImage="">
-    <StackLayout class="flexbox-item company-name-container">
-        <Label class="t-30 company-name" text="App Base"></Label>
+<FlexboxLayout class="page">
+    <StackLayout class="form">
+        <Image class="logo" src="~/images/logo.png"></Image>
+        <Label class="header" text="APP NAME"></Label>
+
+        <PreviousNextView>
+            <GridLayout rows="auto, auto, auto">
+                <StackLayout row="0" class="input-field">
+                    <TextField class="input" hint="Email" [isEnabled]="!processing"
+                        keyboardType="email" autocorrect="false"
+                        autocapitalizationType="none" [(ngModel)]="user.email"
+                        returnKeyType="next" ></TextField>
+                    <StackLayout class="hr-light"></StackLayout>
+                </StackLayout>
+
+                <StackLayout row="1" class="input-field">
+                    <TextField #password class="input" [isEnabled]="!processing"
+                        hint="Contraseña" secure="true" [(ngModel)]="user.password"
+                        [returnKeyType]="isLoggingIn ? 'done' : 'next'"
+                        ></TextField>
+                    <StackLayout class="hr-light"></StackLayout>
+                </StackLayout>
+
+                <StackLayout row="2" *ngIf="!isLoggingIn" class="input-field">
+                    <TextField #confirmPassword class="input" [isEnabled]="!processing"
+                        hint="Confirmar contraseña" secure="true" [(ngModel)]="user.confirmPassword"
+                        returnKeyType="done"></TextField>
+                    <StackLayout class="hr-light"></StackLayout>
+                </StackLayout>
+
+                <ActivityIndicator rowSpan="3" [busy]="processing"></ActivityIndicator>
+            </GridLayout>
+        </PreviousNextView>
+
+        <Button [text]="isLoggingIn ? 'Ingresar' : 'Registrarse'" [isEnabled]="!processing"
+            (tap)="submit()" class="btn btn-primary m-t-20"></Button>
+        <!-- <Label *ngIf="isLoggingIn" text="Forgot your password?" class="login-label"
+            (tap)="forgotPassword()"></Label> -->
     </StackLayout>
-    <!-- <Image src="" stretch="none" class="company-logo"></Image> -->
-    <!-- <StackLayout class="flexbox-item">
-        <Label class="t-18 login-text" text="Log in with your organizational account"></Label>
-        <Button class="btn btn-login btn-rounded-sm font-weight-bold t-18" (tap)="login()" text="Log in"></Button>        
-    </StackLayout> -->
-    <GridLayout rows="auto, auto, auto">
-        <StackLayout row="0">
-            <TextField [(ngModel)]="user.email" hint="Email" 
-                        keyboardType="email"></TextField>
-        </StackLayout>
-        <StackLayout row="1">
-            <TextField [(ngModel)]="user.password" hint="Contraseña" 
-                        secure="true"></TextField>
-        </StackLayout>
-        <StackLayout row="2">
-            <Button class="btn btn-login btn-rounded-sm font-weight-bold t-18"
-                    text="Ingresar" (tap)="submit()"></Button>
-            <Button class="btn btn-login"
-                    text="Registrarse" (tap)="toggleDisplay()"></Button>
-        </StackLayout>
-    </GridLayout>
+
+    <Label class="login-label sign-up-label" (tap)="toggleDisplay()">
+        <FormattedString>
+            <Span [text]="isLoggingIn ? 'No tenes una cuenta? ' : 'Volver a ingreso'"></Span>
+            <Span [text]="isLoggingIn ? 'Registrate!' : ''" class="bold"></Span>
+        </FormattedString>
+    </Label>
 </FlexboxLayout>

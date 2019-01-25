@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit } from "@angular/core";
+import { Component, ElementRef, OnInit, NgZone } from "@angular/core";
 import { Kinvey, User } from 'kinvey-nativescript-sdk';
 import { RouterExtensions } from "nativescript-angular/router";
 import { Page } from "tns-core-modules/ui/page"
@@ -13,30 +13,21 @@ import { StackLayout } from "tns-core-modules/ui/layouts/stack-layout";
 export class HomeComponent implements OnInit {
     public loggedUser: string;
 
-    constructor(private _routerExtensions: RouterExtensions, private page: Page) {
+    constructor(private _routerExtensions: RouterExtensions, private page: Page,private zone: NgZone,) {
         this.page.actionBarHidden = false;
     }
 
     ngOnInit(): void {
         Kinvey.User.me()
             .then((user: User) => {
-                this.loggedUser = user.data['_socialIdentity'].kinveyAuth.id
+                this.loggedUser = user.username;
             });
     }
 
     logout() {
         Kinvey.User.logout()
             .then(() => {
-                this._routerExtensions.navigate(["login"],
-                    {
-                        clearHistory: true,
-                        animated: true,
-                        transition: {
-                            name: "slideBottom",
-                            duration: 350,
-                            curve: "ease"
-                        }
-                    });
+                this.navigateLogin();
             });
     }
 
@@ -49,5 +40,20 @@ export class HomeComponent implements OnInit {
     onProfileButtonTap() {
         // Navigate to profile page here
         alert("Navigate to profile page");
+    }
+
+    private navigateLogin() {
+        this.zone.run(() => {
+            this._routerExtensions.navigate(["login"],
+            {
+                clearHistory: true,
+                animated: true,
+                transition: {
+                    name: "slideBottom",
+                    duration: 350,
+                    curve: "ease"
+                }
+            });
+        });
     }
 }

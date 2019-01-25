@@ -1,5 +1,4 @@
-import { Component } from "@angular/core";
-import { Kinvey } from 'kinvey-nativescript-sdk';
+import { Component, ViewChild, ElementRef } from "@angular/core";
 import { RouterExtensions } from "nativescript-angular/router";
 import { NgZone } from "@angular/core";
 import { Page } from "tns-core-modules/ui/page"
@@ -13,6 +12,9 @@ import { UserService } from "../model/user/shared/user.service";
 })
 export class LoginComponent {
     user: User;
+    email: string;
+    @ViewChild("password") password: ElementRef;
+    @ViewChild("confirmPassword") confirmPassword: ElementRef;
     isLoggingIn = true;
     processing=false;
 
@@ -61,7 +63,25 @@ export class LoginComponent {
             });
     }
 
-    private register(){}
+    private register(){
+        if (this.user.password != this.user.confirmPassword) {
+            this.alertMsj("Las contraseñas no coinciden");
+            return;
+        }
+
+        this.userService.register(this.user)
+            .then(()=>{
+                this.processing = false;
+                this.isLoggingIn = true;
+                this.alertMsj("Su cuenta se creo satisfactoriamente");
+                this.navigateHome();
+            })
+            .catch(()=>{
+                this.processing=false;
+                this.alertMsj("Hubo un problema al crear su cuenta");
+            });
+        
+    }
 
     private alertMsj(msj: string){
         return alert({
@@ -70,23 +90,6 @@ export class LoginComponent {
             message: msj
         });
     }
-
-
-    // login() {
-    //     if (Kinvey.User.getActiveUser() == null) {
-    //         Kinvey.User.loginWithMIC()
-    //             .then((user: Kinvey.User) => {
-    //                 this.navigateHome();
-    //                 console.log("user: " + JSON.stringify(user));
-    //             })
-    //             .catch((error: Kinvey.BaseError) => {
-    //                 alert("An error occurred. Check your Kinvey settings.");
-    //                 console.log("error: " + error);
-    //             });
-    //     } else {
-    //         this.navigateHome();
-    //     }
-    // }
 
     private navigateHome() {
         this.zone.run(() => {

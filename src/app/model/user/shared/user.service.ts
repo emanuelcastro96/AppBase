@@ -8,8 +8,13 @@ import { Kinvey } from 'kinvey-nativescript-sdk';
 
 @Injectable()
 export class UserService {
-	login(user: User){
-		return Kinvey.User.login(user.email, user.password)
+	login(user: User) {
+        return Kinvey.User.login(user.email, user.password)
+            .catch(this.errorHandler);
+    }
+
+	register(user: User){
+		return Kinvey.User.signup({username: user.email, password: user.password})
 			.catch(this.errorHandler);
 	}
 
